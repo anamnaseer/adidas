@@ -21,6 +21,8 @@ To run selenium test, navigate to directory and run:
 
 `gradle sanity`
 
+You can also run the feature files directly
+
 ## Reporting
 
 Reports can be found at `target/cucumberReports/Report.html` directories after each run.
