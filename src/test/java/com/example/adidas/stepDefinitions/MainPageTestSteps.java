@@ -1,18 +1,14 @@
 package com.example.adidas.stepDefinitions;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -25,6 +21,7 @@ import pageObjects.MainPage;
 
 public class MainPageTestSteps
 {
+    private static final Logger log = LoggerFactory.getLogger(MainPageTestSteps.class);
     private static String totalAmount;
     private WebDriver driver;
     private MainPage mainPage;
@@ -52,6 +49,7 @@ public class MainPageTestSteps
     @Given("The navigation through product category is working")
     public void checkMenuNavigation()
     {
+        log.info("Checking menu buttons");
         mainPage.phoneMenuButton.click();
         mainPage.laptopsMenuButton.click();
         mainPage.monitorsMenuButton.click();
@@ -60,6 +58,7 @@ public class MainPageTestSteps
     @When("I select {string} and click add to cart")
     public void selectLaptop(String laptop)
     {
+        log.info("selecting laptop::" + laptop);
         mainPage.laptopsMenuButton.click();
         mainPage.getElementByText(laptop).click();
         mainPage.addToCartButton.click();
@@ -72,6 +71,7 @@ public class MainPageTestSteps
     @And("I delete {string} from cart")
     public void deleteFromCart(String laptop)
     {
+        log.info("deleting laptop::" + laptop);
         mainPage.cartMenuButton.click();
         mainPage.deleteFromCart(laptop).click();
         totalAmount = mainPage.totalCartAmount.getText();
@@ -80,6 +80,7 @@ public class MainPageTestSteps
     @Then("I place order by filling form and clicking purchase")
     public void placeOrder() throws InterruptedException
     {
+        log.info("placing order");
         mainPage.placeOrderButton.click();
         mainPage.fillPurchaseForm();
         driver.findElement(By.cssSelector("[onclick=\"purchaseOrder()\"]")).click();
@@ -88,10 +89,10 @@ public class MainPageTestSteps
     @And("I capture purchase Id and Amount")
     public void logPurchaseIDandAmount() throws InterruptedException
     {
-        WebDriverWait wait = new WebDriverWait(driver,30);
+        WebDriverWait wait = new WebDriverWait(driver, 30);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[class=\"sweet-alert  showSweetAlert visible\"]")));
-        String text=driver.findElement(By.xpath("//div/p[@class=\"lead text-muted \"]")).getText();
-        System.out.println(text);
+        String text = driver.findElement(By.xpath("//div/p[@class=\"lead text-muted \"]")).getText();
+        log.info("text shown on popup" + text);
     }
 
     @And("I validate purchase amount equals expected.")

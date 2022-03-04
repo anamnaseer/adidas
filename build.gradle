@@ -10,6 +10,12 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    cucumberRuntime {
+        extendsFrom testRuntime
+    }
+}
+
 ext {
     allureVersion = '2.14.0'
     junitVersion = '5.7.1'
@@ -23,15 +29,15 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-    implementation('org.seleniumhq.selenium:selenium-java:4.1.2')
-    implementation('io.github.bonigarcia:webdrivermanager:5.0.2')
-    implementation('org.assertj:assertj-core:3.22.0')
-    implementation("ch.qos.logback:logback-classic:1.2.10")
-    implementation("org.slf4j:slf4j-api:1.7.36")
+    compile('org.seleniumhq.selenium:selenium-java:4.1.2')
+    compile('io.github.bonigarcia:webdrivermanager:5.0.2')
+    compile('org.assertj:assertj-core:3.22.0')
+    compile("ch.qos.logback:logback-classic:1.2.10")
+    compile("org.slf4j:slf4j-api:1.7.36")
 
     // cucumber
     implementation("io.cucumber:gherkin:22.0.0")
-    implementation("io.cucumber:cucumber-java:7.2.3")
+    compile("io.cucumber:cucumber-java:7.2.3")
     implementation('io.cucumber:cucumber-core:7.2.3')
     implementation('io.cucumber:cucumber-junit:7.2.3')
 
@@ -39,10 +45,10 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 
     //rest-assured
-    implementation("io.rest-assured:rest-assured:4.5.1")
-    implementation("io.rest-assured:json-schema-validator:4.5.1")
-    implementation("io.rest-assured:rest-assured-all:4.5.1")
-    implementation("com.googlecode.json-simple:json-simple:1.1.1")
+    compile("io.rest-assured:rest-assured:4.5.1")
+    compile("io.rest-assured:json-schema-validator:4.5.1")
+    compile("io.rest-assured:rest-assured-all:4.5.1")
+    compile("com.googlecode.json-simple:json-simple:1.1.1")
 }
 
 test {
@@ -54,5 +60,15 @@ allure {
 
     useJUnit5 {
         version = "${allureVersion}"
+    }
+}
+task sanity() {
+    dependsOn assemble, testClasses
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = ['--plugin', 'html:target/cucumberReports/Report.html', '--plugin', 'json:target/cucumberReports/cucumber.json', '--glue', 'com.example.adidas.stepDefinitions', 'src/test/resources', '--tags', '@test']
+        }
     }
 }
