@@ -1,6 +1,6 @@
 Feature: Demoblaze-Cart
 
-  @sanity
+  @test
   Scenario:Check Cart value
     Given The navigation through product category is working
     When I select 'Sony vaio i5' and click add to cart
