@@ -10,7 +10,8 @@
 * Gradle
 * JUnit
 * Selenium Webdriver
-* cucumber reporting
+* cucumber
+* Gherkin
 * Rest Assured
 * Lombok
 
